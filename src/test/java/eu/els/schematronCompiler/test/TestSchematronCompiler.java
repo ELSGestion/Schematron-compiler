@@ -1,6 +1,6 @@
 package eu.els.schematronCompiler.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,12 +19,20 @@ import net.sf.saxon.s9api.XdmValue;
 public class TestSchematronCompiler {
 	
 	private static Processor testSaxonProc = new Processor(false);
+
 	
 	@Test
 	public void tinySampleIso(){
 		XdmNode resultXsl = prepareTestCase("test-ISO.sch");
 		
-		assertXpathTrue(resultXsl, "//Q{http://purl.oclc.org/dsdl/svrl}failed-assert/@test = '@toto'");
+		assertXpathTrue(resultXsl, "//report/@test = '@toto'");
+	}
+	
+	@Test
+	public void tinySampleSch15(){
+		XdmNode resultXsl = prepareTestCase("test-1.5.sch");
+		
+		assertXpathTrue(resultXsl, "//failed-assertion/@test = '@toto'");
 	}
 	
 	

@@ -14,6 +14,10 @@ public class SchematronCompilationException extends Exception{
 	public SchematronCompilationException(Throwable cause) {
 		super(cause);
 	}
+
+	public SchematronCompilationException(String message) {
+		super(message);
+	}
 	
 	
 

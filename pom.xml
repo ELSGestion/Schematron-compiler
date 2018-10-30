@@ -23,6 +23,11 @@
 		    <version>4.12</version>
 		    <scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.els.oss</groupId>
+			<artifactId>jing</artifactId>
+			<version>20180404</version>
+		</dependency>
 		
 	</dependencies>
 

@@ -53,7 +53,7 @@ public class TestSchematronCompiler {
 	 */
 	private XdmNode prepareTestCase(String ressource){
 		try {
-			SchematronCompiler schCompiler = SchematronCompiler.getInstance();
+			SchematronCompiler schCompiler = new SchematronCompiler();
 			File input = testRessourceAsFile(ressource);
 			File output = tmpOutputFile();
 			schCompiler.compile(input, output);

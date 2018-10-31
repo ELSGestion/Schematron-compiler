@@ -1,14 +1,8 @@
 package eu.els.schematronCompiler.cli;
 
 
-import java.io.File;
-
-import javax.xml.transform.Source;
-
 import eu.els.schematronCompiler.SchematronCompilationException;
 import eu.els.schematronCompiler.SchematronCompiler;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XdmNode;
 
 public class Launcher {
 	
@@ -17,8 +11,10 @@ public class Launcher {
 		try {
 			Arguments arguments = new Arguments(args);		
 			
-			log(arguments);
-			SchematronCompiler.getInstance().compile(arguments.getInput(),arguments.getOutput());
+			trace(arguments);
+			
+			SchematronCompiler compiler = new SchematronCompiler();
+			compiler.compile(arguments.getInput(),arguments.getOutput());
 		} catch (IllegalArgumentException e) {
 			usage(e);
 		}		
@@ -31,6 +27,8 @@ public class Launcher {
 		usage();
 	}
 	
+	// =====================================================================
+	
 	private static void usage(){
 		System.out.println("\nUSAGE\n=====\n");
 		
@@ -40,7 +38,7 @@ public class Launcher {
 		System.out.println("----\nYou can also directly integrate " + SchematronCompiler.class.getName() + " in your Java application.");
 	}
 	
-	private static void log(Arguments arguments){
+	private static void trace(Arguments arguments){
 		System.out.println("Compiling : " + arguments.getInput().getAbsolutePath() );
 		System.out.println("to : " + arguments.getOutput().getAbsolutePath() );
 		System.out.println("----" );

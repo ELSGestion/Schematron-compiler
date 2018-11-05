@@ -12,6 +12,7 @@ import javax.xml.transform.Source;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xmlresolver.Resolver;
 
 import eu.els.schematronCompiler.SaxonHelper;
 import eu.els.schematronCompiler.SchematronCompilationException;
@@ -25,12 +26,17 @@ public abstract class TransformPipe {
 	private Source firstStepSource;
 	private Destination lastStepDestination;
 	
+	protected Resolver resolver;
+	
 	public static final String SCH_15_NS = "http://www.ascc.net/xml/schematron";
 	public static final String SCH_ISO_NS = "http://purl.oclc.org/dsdl/schematron";
+	private static final String CATALOGS_SYSTEM_PROPERTY = "xml.catalog.files";
 	
 	
 
-	public static TransformPipe getInstance(File schematron, File output) throws SchematronCompilationException {
+	public static TransformPipe newInstance(File schematron, File output, String[] catalogs) throws SchematronCompilationException {
+		
+		setCatalogsSystemProperty(catalogs);
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -57,6 +63,12 @@ public abstract class TransformPipe {
 		
 	}
 	
+	
+
+	public static TransformPipe newInstance(File schematron, File output) throws SchematronCompilationException {
+		return newInstance(schematron, output, null);
+	}
+	
 	protected static XsltExecutable CompileXSL(String xslName) throws SchematronCompilationException{
 		try {
 			return SaxonHelper.getInstance().compile(JingXSLFetcher.getJingXsl(xslName));
@@ -68,11 +80,25 @@ public abstract class TransformPipe {
 	
 	protected TransformPipe(File schematron, File output) throws SchematronCompilationException{
 		try {
+			this.resolver = new Resolver();
 			this.firstStepSource = SaxonHelper.getInstance().getDocumentBuilder().build(schematron).asSource();		
 			this.lastStepDestination = SaxonHelper.getInstance().getProcessor().newSerializer(output);
+			
 		} catch (SaxonApiException e) {
 			throw new SchematronCompilationException(e);
 		}
+	}
+	
+	private static void setCatalogsSystemProperty(String[] catalogs) {
+		if(catalogs == null) return;
+		
+		StringBuilder semicolonDelimitedList = new StringBuilder();
+		for (String catalog : catalogs) {
+			semicolonDelimitedList.append(catalog).append(';');
+		}
+		semicolonDelimitedList.setLength(semicolonDelimitedList.length() - 1);
+		
+		System.setProperty(CATALOGS_SYSTEM_PROPERTY, semicolonDelimitedList.toString());
 	}
 	
 	
@@ -93,6 +119,10 @@ public abstract class TransformPipe {
 	public void setLastStepDestination(Destination lastStepDestination) {
 		this.lastStepDestination = lastStepDestination;
 	}
+
+	
+
+
 	
 	
 	

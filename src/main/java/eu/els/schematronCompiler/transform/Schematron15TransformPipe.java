@@ -23,6 +23,7 @@ public class Schematron15TransformPipe extends TransformPipe {
 		try {
 			step.setSource(getFirstStepSource());
 			step.setDestination(getLastStepDestination());
+			step.setURIResolver(this.resolver);
 			
 			step.transform();
 		} catch (SaxonApiException e) {

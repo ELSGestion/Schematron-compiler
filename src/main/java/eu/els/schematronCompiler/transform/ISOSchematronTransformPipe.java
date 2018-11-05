@@ -30,6 +30,9 @@ public class ISOSchematronTransformPipe extends TransformPipe {
 		XsltTransformer step2 = isoSchematronXSLT.load();
 		
 		try {
+			step1.setURIResolver(this.resolver);
+			step2.setURIResolver(this.resolver); // Probably not usefull for step2, but who knows...
+			
 			step1.setSource(getFirstStepSource());
 			step1.setDestination(step2);
 			step2.setDestination(getLastStepDestination());

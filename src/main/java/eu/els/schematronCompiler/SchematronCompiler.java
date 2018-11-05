@@ -38,7 +38,7 @@ public class SchematronCompiler {
 	}
 	
 	private boolean hasCatalogs(){
-		return this.catalogs != null || this.catalogs.length > 0;
+		return this.catalogs != null && this.catalogs.length > 0;
 	}
 
 	public String[] getCatalogs() {

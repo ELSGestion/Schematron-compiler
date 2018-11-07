@@ -3,18 +3,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.els.oss</groupId>
 	<artifactId>schematron-compiler</artifactId>
-	<version>1.5.1-SNAPSHOT</version>
+	<version>1.5.1</version>
 
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<releaseRepositoryId>nexus-releases</releaseRepositoryId>
-	    <releaseRepositoryUrl>https://nexus.lefebvre-sarrut.eu/repository/releases</releaseRepositoryUrl>
-	    <snapshotRepositoryId>nexus-snapshots</snapshotRepositoryId>
-	    <snapshotRepositoryUrl>https://nexus.lefebvre-sarrut.eu/repository/snapshots</snapshotRepositoryUrl>
-	    <siteId>site-deploy</siteId>
-	    <siteUrl>file:///var/www/html/Artefact/${project.groupId}/${project.artifactId}/${project.version}/</siteUrl>
+		<releaseRepositoryUrl>https://nexus.lefebvre-sarrut.eu/repository/releases</releaseRepositoryUrl>
+		<snapshotRepositoryId>nexus-snapshots</snapshotRepositoryId>
+		<snapshotRepositoryUrl>https://nexus.lefebvre-sarrut.eu/repository/snapshots</snapshotRepositoryUrl>
 	</properties>
 
 	<dependencies>
@@ -59,11 +57,6 @@
 			<id>${releaseRepositoryId}</id>
 			<url>${releaseRepositoryUrl}</url>
 		</repository>
-		<site>
-			<id>${siteId}</id>
-			<name>Magneto website</name>
-			<url>${siteUrl}</url>
-		</site>
 	</distributionManagement>
 
 </project>

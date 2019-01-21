@@ -1,8 +1,9 @@
 package eu.els.schematronCompiler.transform;
 
-import java.io.File;
+import javax.xml.transform.Source;
 
 import eu.els.schematronCompiler.SchematronCompilationException;
+import net.sf.saxon.s9api.Destination;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
@@ -15,7 +16,7 @@ public class ISOSchematronTransformPipe extends TransformPipe {
 	private static XsltExecutable dsdlIncludeXSLT;
 	private static XsltExecutable isoSchematronXSLT;
 
-	ISOSchematronTransformPipe(File schematron, File output) throws SchematronCompilationException {
+	ISOSchematronTransformPipe(Source schematron, Destination output) throws SchematronCompilationException {
 		super(schematron,output);
 		
 		if(dsdlIncludeXSLT == null) dsdlIncludeXSLT = CompileXSL(ISO_DSDL_XSLT_NAME);

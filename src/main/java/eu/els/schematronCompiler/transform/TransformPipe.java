@@ -1,7 +1,5 @@
 package eu.els.schematronCompiler.transform;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,8 +31,8 @@ public abstract class TransformPipe {
 	private static final String CATALOGS_SYSTEM_PROPERTY = "xml.catalog.files";
 	
 	
-
-	public static TransformPipe newInstance(File schematron, File output, String[] catalogs) throws SchematronCompilationException {
+	
+	public static TransformPipe newInstance(Source schematron, Destination output, String[] catalogs) throws SchematronCompilationException {
 		
 		setCatalogsSystemProperty(catalogs);
 		
@@ -45,7 +43,7 @@ public abstract class TransformPipe {
 			XMLReader reader = parser.getXMLReader();	
 			SchematronNSFetcher schematronNSContentHandler = new SchematronNSFetcher();	
 			reader.setContentHandler(schematronNSContentHandler);	
-			reader.parse(new InputSource(new FileInputStream(schematron)));
+			reader.parse(new InputSource(schematron.getSystemId()));
 			
 			switch (schematronNSContentHandler.getRootNamespace()) {
 			case SCH_15_NS:
@@ -53,11 +51,11 @@ public abstract class TransformPipe {
 			case SCH_ISO_NS:
 				return new ISOSchematronTransformPipe(schematron,output);
 			default:
-				throw new SchematronCompilationException("Not a schematron document : " + schematron.getAbsolutePath());
+				throw new SchematronCompilationException("Not a schematron document : " + schematron.getSystemId());
 			}
 	
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new SchematronCompilationException("Error parsing schematron file : " + schematron.getAbsolutePath(), e);
+			throw new SchematronCompilationException("Error parsing schematron document : " + schematron.getSystemId(), e);
 		}
 		
 		
@@ -65,7 +63,7 @@ public abstract class TransformPipe {
 	
 	
 
-	public static TransformPipe newInstance(File schematron, File output) throws SchematronCompilationException {
+	public static TransformPipe newInstance(Source schematron, Destination output) throws SchematronCompilationException {
 		return newInstance(schematron, output, null);
 	}
 	
@@ -78,15 +76,14 @@ public abstract class TransformPipe {
 	}
 	
 	
-	protected TransformPipe(File schematron, File output) throws SchematronCompilationException{
-		try {
-			this.resolver = new Resolver();
-			this.firstStepSource = SaxonHelper.getInstance().getDocumentBuilder().build(schematron).asSource();		
-			this.lastStepDestination = SaxonHelper.getInstance().getProcessor().newSerializer(output);
+	protected TransformPipe(Source schematron, Destination output) {
+	
+		this.resolver = new Resolver();
+
+		this.firstStepSource = schematron;		
+		this.lastStepDestination = output;
 			
-		} catch (SaxonApiException e) {
-			throw new SchematronCompilationException(e);
-		}
+		
 	}
 	
 	private static void setCatalogsSystemProperty(String[] catalogs) {

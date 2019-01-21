@@ -2,8 +2,11 @@ package eu.els.schematronCompiler;
 
 import java.io.File;
 
+import javax.xml.transform.Source;
+
 import eu.els.schematronCompiler.transform.TransformPipe;
-import eu.els.schematronCompiler.transform.TransformPipeFactory;
+import net.sf.saxon.s9api.Destination;
+import net.sf.saxon.s9api.SaxonApiException;
 
 /**
  * 
@@ -27,14 +30,30 @@ public class SchematronCompiler {
 	
 	public void compile(File input, File output) throws SchematronCompilationException  {
 			
-		TransformPipe pipe;
-		if(this.hasCatalogs()){
-			pipe = TransformPipe.newInstance(input, output,this.catalogs);
-		} else {
-		    pipe = TransformPipe.newInstance(input, output);
+		Source inputAsSource;
+		try {
+			
+			inputAsSource = SaxonHelper.getInstance().getDocumentBuilder().build(input).asSource();		
+			Destination outputDestination = SaxonHelper.getInstance().getProcessor().newSerializer(output);
+			
+			compile(inputAsSource, outputDestination);	
+			
+		} catch (SaxonApiException e) {
+			throw new SchematronCompilationException(e);
 		}
-		pipe.transform();	
 		
+	}
+	
+	public void compile(Source input, Destination output) throws SchematronCompilationException {
+
+		TransformPipe pipe;
+		if (this.hasCatalogs()) {
+			pipe = TransformPipe.newInstance(input, output, this.catalogs);
+		} else {
+			pipe = TransformPipe.newInstance(input, output);
+		}
+		pipe.transform();
+
 	}
 	
 	private boolean hasCatalogs(){

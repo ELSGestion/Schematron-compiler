@@ -1,8 +1,9 @@
 package eu.els.schematronCompiler.transform;
 
-import java.io.File;
+import javax.xml.transform.Source;
 
 import eu.els.schematronCompiler.SchematronCompilationException;
+import net.sf.saxon.s9api.Destination;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
@@ -12,7 +13,7 @@ public class Schematron15TransformPipe extends TransformPipe {
 	private static final String SCHEMATRON_XSLT_NAME = "schematron.xsl";
 	private static XsltExecutable xslt;
 
-	Schematron15TransformPipe(File schematron, File output) throws SchematronCompilationException {
+	Schematron15TransformPipe(Source schematron, Destination output) throws SchematronCompilationException {
 		super(schematron,output);
 		if(xslt == null) xslt = CompileXSL(SCHEMATRON_XSLT_NAME);
 	}

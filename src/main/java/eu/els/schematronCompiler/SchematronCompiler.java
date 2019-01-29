@@ -23,12 +23,13 @@ public class SchematronCompiler {
 	
 	private String[] catalogs;
 	
-	private Map<QName, Object> parameters = new HashMap<>();	
+	private Map<QName, Object> parameters;	
 	public SchematronCompiler() {
-		
+		resetParameters();
 	}
 	
 	public SchematronCompiler(String... catalogs) {
+		this();
 		this.catalogs = catalogs;
 	}
 	
@@ -66,6 +67,10 @@ public class SchematronCompiler {
 	
 	public void addParameter(QName name, Object value) {
 		this.parameters.put(name, value);
+	}
+	
+	public void resetParameters() {
+		this.parameters = new HashMap<>();
 	}
 
 	public String[] getCatalogs() {

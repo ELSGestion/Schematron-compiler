@@ -1,7 +1,9 @@
 package eu.els.schematronCompiler.transform;
 
 import java.io.IOException;
+import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -25,6 +27,7 @@ public abstract class TransformPipe {
 	private Destination lastStepDestination;
 	
 	protected Resolver resolver;
+	private Map<QName, Object> parameters;
 	
 	public static final String SCH_15_NS = "http://www.ascc.net/xml/schematron";
 	public static final String SCH_ISO_NS = "http://purl.oclc.org/dsdl/schematron";
@@ -32,7 +35,7 @@ public abstract class TransformPipe {
 	
 	
 	
-	public static TransformPipe newInstance(Source schematron, Destination output, String[] catalogs) throws SchematronCompilationException {
+	public static TransformPipe newInstance(Map<QName, Object> parameters, Source schematron, Destination output, String[] catalogs) throws SchematronCompilationException {
 		
 		setCatalogsSystemProperty(catalogs);
 		
@@ -47,9 +50,9 @@ public abstract class TransformPipe {
 			
 			switch (schematronNSContentHandler.getRootNamespace()) {
 			case SCH_15_NS:
-				return new Schematron15TransformPipe(schematron,output);
+				return new Schematron15TransformPipe(parameters, schematron,output);
 			case SCH_ISO_NS:
-				return new ISOSchematronTransformPipe(schematron,output);
+				return new ISOSchematronTransformPipe(parameters, schematron,output);
 			default:
 				throw new SchematronCompilationException("Not a schematron document : " + schematron.getSystemId());
 			}
@@ -63,8 +66,8 @@ public abstract class TransformPipe {
 	
 	
 
-	public static TransformPipe newInstance(Source schematron, Destination output) throws SchematronCompilationException {
-		return newInstance(schematron, output, null);
+	public static TransformPipe newInstance(Map<QName, Object> parameters, Source schematron, Destination output) throws SchematronCompilationException {
+		return newInstance(parameters, schematron, output, null);
 	}
 	
 	protected static XsltExecutable CompileXSL(String xslName) throws SchematronCompilationException{
@@ -76,10 +79,11 @@ public abstract class TransformPipe {
 	}
 	
 	
-	protected TransformPipe(Source schematron, Destination output) {
+	protected TransformPipe(Map<QName, Object> parameters, Source schematron, Destination output) {
 	
 		this.resolver = new Resolver();
 
+		this.parameters = parameters;
 		this.firstStepSource = schematron;		
 		this.lastStepDestination = output;
 			
@@ -116,6 +120,12 @@ public abstract class TransformPipe {
 	public void setLastStepDestination(Destination lastStepDestination) {
 		this.lastStepDestination = lastStepDestination;
 	}
+
+	public Map<QName, Object> getParameters() {
+		return parameters;
+	}
+
+	
 
 	
 

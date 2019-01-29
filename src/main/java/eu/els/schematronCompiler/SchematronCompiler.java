@@ -1,7 +1,10 @@
 package eu.els.schematronCompiler;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import eu.els.schematronCompiler.transform.TransformPipe;
@@ -20,6 +23,7 @@ public class SchematronCompiler {
 	
 	private String[] catalogs;
 	
+	private Map<QName, Object> parameters = new HashMap<>();	
 	public SchematronCompiler() {
 		
 	}
@@ -48,9 +52,9 @@ public class SchematronCompiler {
 
 		TransformPipe pipe;
 		if (this.hasCatalogs()) {
-			pipe = TransformPipe.newInstance(input, output, this.catalogs);
+			pipe = TransformPipe.newInstance(this.parameters, input, output, this.catalogs);
 		} else {
-			pipe = TransformPipe.newInstance(input, output);
+			pipe = TransformPipe.newInstance(this.parameters, input, output);
 		}
 		pipe.transform();
 
@@ -58,6 +62,10 @@ public class SchematronCompiler {
 	
 	private boolean hasCatalogs(){
 		return this.catalogs != null && this.catalogs.length > 0;
+	}
+	
+	public void addParameter(QName name, Object value) {
+		this.parameters.put(name, value);
 	}
 
 	public String[] getCatalogs() {
